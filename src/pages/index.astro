@@ -1,31 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LocalBusinessSchema from '../components/LocalBusinessSchema.astro';
-import BreadcrumbSchema from '../components/BreadcrumbSchema.astro';
 import { ciudades, EMPRESA } from '../data/index';
 import { siteConfig } from '../config/site';
-import { content as rawContent } from '../config/content';
+import { content } from '../config/content';
 
 const mainCiudad = ciudades[0];
-// Reemplaza {{city}} en cualquier string, recursivamente en todo el objeto content
+// Helper: reemplaza {{city}} por la ciudad principal
 const c = (str: string) => str.replace(/\{\{city\}\}/g, siteConfig.mainCity);
-function deepC(obj: any): any {
-  if (typeof obj === 'string') return c(obj);
-  if (Array.isArray(obj)) return obj.map(deepC);
-  if (obj && typeof obj === 'object') return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, deepC(v)]));
-  return obj;
-}
-const content = deepC(rawContent);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-const canonical   = `${siteConfig.web}/`;
 const title       = `${content.hero.h1main} en ${siteConfig.mainCity} – Presupuesto gratis | ${siteConfig.businessName}`;
 const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
 ---
 
-<BaseLayout title={title} description={description} canonical={canonical}>
-  <LocalBusinessSchema ciudad={mainCiudad} servicio={mainCiudad.servicios[0]} url={canonical} slot="head" />
-  <BreadcrumbSchema items={[{ name: 'Inicio', url: canonical }]} slot="head" />
+<BaseLayout title={title} description={description}>
 
   <!-- ① HERO LOCAL ─────────────────────────────────────── -->
   <section class="hero" aria-label="Presentación del servicio">
@@ -67,7 +55,7 @@ const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
           <p class="hero-card-stat">{content.hero.cardStat}</p>
           <p class="hero-card-label">{content.hero.cardLabel}</p>
           <div class="hero-card-metrics">
-            <div><strong>{ciudades.length}</strong><span>municipios</span></div>
+            <div><strong data-count={ciudades.length} data-suffix="">{ciudades.length}</strong><span>municipios</span></div>
             <div><strong>24 h</strong><span>presupuesto</span></div>
             <div><strong>4,9 ★</strong><span>valoración</span></div>
           </div>
@@ -91,12 +79,12 @@ const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
   <!-- ② BENEFICIOS / POR QUÉ ELEGIRNOS ────────────────── -->
   <section class="sec sec--tint" aria-labelledby="beneficios-heading">
     <div class="container">
-      <div class="section-header">
+      <div class="section-header reveal">
         <h2 id="beneficios-heading">¿Por qué elegirnos en {siteConfig.mainCity}?</h2>
         <p class="section-sub">{content.sections.beneficiosSub}</p>
       </div>
 
-      <ul class="benefits-grid" role="list">
+      <ul class="benefits-grid reveal-stagger" role="list">
         {content.benefits.map(b => (
           <li class="benefit-card">
             <div class="benefit-icon" aria-hidden="true">
@@ -115,7 +103,7 @@ const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
   <!-- ③ SERVICIOS DETALLADOS ──────────────────────────── -->
   <section class="sec" aria-labelledby="servicios-heading">
     <div class="container">
-      <div class="section-header">
+      <div class="section-header reveal">
         <h2 id="servicios-heading">Nuestros servicios en {siteConfig.mainCity}</h2>
         <p class="section-sub">{content.sections.serviciosSub}</p>
       </div>
@@ -124,7 +112,7 @@ const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
         Servicios de <a href="/servicios/">{siteConfig.serviceType} en {siteConfig.mainCity}</a>. Equipo propio, presupuesto gratuito y atención personalizada.
       </p>
 
-      <ul class="srv-grid" role="list">
+      <ul class="srv-grid reveal-stagger" role="list">
         {content.serviceSummaries.map(srv => (
           <li class={`srv-card${srv.featured ? ' srv-card--featured' : ''}`}>
             {srv.featured && <div class="srv-card-badge">Más solicitado</div>}
@@ -151,12 +139,12 @@ const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
   <!-- ④ ZONA DE ACTUACIÓN ──────────────────────────────── -->
   <section class="sec sec--tint" aria-labelledby="zona-heading">
     <div class="container">
-      <div class="section-header">
+      <div class="section-header reveal">
         <h2 id="zona-heading">Zona de actuación: {siteConfig.mainCity} y alrededores</h2>
         <p class="section-sub">Cubrimos {siteConfig.mainCity} y {ciudades.length - 1} municipios de la comarca. Desplazamiento incluido en el presupuesto.</p>
       </div>
 
-      <ul class="zona-grid" role="list">
+      <ul class="zona-grid reveal-stagger" role="list">
         {ciudades.map(ciudad => (
           <li class="zona-card">
             <div class="zona-card-header">
@@ -190,7 +178,7 @@ const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
     <div class="container">
       <div class="section-header">
         <h2 id="proceso-heading">Cómo trabajamos: 4 pasos sin complicaciones</h2>
-        <p class="section-sub">{c(content.sections.beneficiosSub)}</p>
+        <p class="section-sub">Un proceso claro y transparente desde el primer contacto hasta la entrega del inmueble vacío.</p>
       </div>
 
       <ol class="proceso-steps">
@@ -367,7 +355,7 @@ const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
             </a>
 
             <a
-              href={`https://wa.me/${siteConfig.whatsapp}?text=Hola%2C%20quiero%20un%20presupuesto%20para%20${encodeURIComponent(siteConfig.serviceType)}%20en%20${encodeURIComponent(siteConfig.mainCity)}`}
+              href={`https://wa.me/${siteConfig.whatsapp}?text=Hola%2C%20quiero%20un%20presupuesto%20para%20vaciado%20en%20${encodeURIComponent(siteConfig.mainCity)}`}
               class="cta-contact-item"
               target="_blank"
               rel="noopener noreferrer"
@@ -407,7 +395,7 @@ const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
             <div class="trust-item"><span aria-hidden="true">✓</span> Presupuesto gratuito en 24 h</div>
             <div class="trust-item"><span aria-hidden="true">✓</span> Sin compromiso</div>
             <div class="trust-item"><span aria-hidden="true">✓</span> Equipo propio certificado</div>
-            <div class="trust-item"><span aria-hidden="true">✓</span> {c(content.hero.badge3)}</div>
+            <div class="trust-item"><span aria-hidden="true">✓</span> Gestión de residuos legalizada</div>
           </div>
         </aside>
 
@@ -437,7 +425,7 @@ const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
      HERO
   ══════════════════════════════════════════════════════ */
   .hero {
-    background: var(--c-hero-gradient);
+    background: linear-gradient(150deg, #0d1b3e 0%, #0f2a5c 50%, #0057ff 100%);
     padding-block: 5.5rem 0;
     margin-top: var(--header-h);
     position: relative;
