@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sootix.pages.dev/sitemap-index.xml
