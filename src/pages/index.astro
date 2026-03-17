@@ -16,6 +16,7 @@ function deepC(obj: any): any {
   return obj;
 }
 const content = deepC(rawContent);
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const canonical   = `${siteConfig.web}/`;
 const title       = `${content.hero.h1main} en ${siteConfig.mainCity} – Presupuesto gratis | ${siteConfig.businessName}`;
@@ -167,7 +168,7 @@ const description = `${content.hero.description} Llama al ${siteConfig.phone}.`;
             <ul class="zona-services">
               {ciudad.servicios.map(s => (
                 <li>
-                  <a href={`/${ciudad.slug}/${s.slug}/`}>{s.nombre} en {ciudad.nombre}</a>
+                  <a href={`/${ciudad.slug}/${s.slug}/`}>{cap(s.nombre)} en {ciudad.nombre}</a>
                 </li>
               ))}
             </ul>
