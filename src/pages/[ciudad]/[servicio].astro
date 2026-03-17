@@ -176,7 +176,7 @@ const otrasCiudades     = mismosServicioOtrasCiudades(servicioSlug, ciudadSlug);
           {otrosServicios.map(s => (
             <li>
               <a href={s.href} class="interlink-card">
-                <span class="interlink-title">{s.nombre} en {ciudad.nombre}</span>
+                <span class="interlink-title">{cap(s.nombre)} en {ciudad.nombre}</span>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4"/>
                 </svg>
@@ -192,13 +192,13 @@ const otrasCiudades     = mismosServicioOtrasCiudades(servicioSlug, ciudadSlug);
   {otrasCiudades.length > 0 && (
     <section class="page-section" aria-labelledby="otras-ciudades-heading">
       <div class="container">
-        <h2 id="otras-ciudades-heading">{servicio.nombre} en otras ciudades</h2>
+        <h2 id="otras-ciudades-heading">{cap(servicio.nombre)} en otras ciudades</h2>
         <p class="section-sub">Prestamos el servicio de {servicio.nombre.toLowerCase()} también en estos municipios.</p>
         <ul class="interlink-grid">
           {otrasCiudades.map(c => (
             <li>
               <a href={c.href} class="interlink-card">
-                <span class="interlink-title">{servicio.nombre} en {c.ciudad}</span>
+                <span class="interlink-title">{cap(servicio.nombre)} en {c.ciudad}</span>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4"/>
                 </svg>

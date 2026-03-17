@@ -14,6 +14,7 @@ const ciudad = ciudades.find(c => c.slug === ciudadSlug)!;
 // Otras ciudades para interlinking
 const otrasCiudades = ciudades.filter(c => c.slug !== ciudadSlug);
 
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const canonical   = `${siteConfig.web}/${ciudadSlug}/`;
 const title       = `${siteConfig.serviceType} en ${ciudad.nombre} | ${EMPRESA.nombre}`;
 const description = ciudad.metaDesc || `${siteConfig.serviceType} en ${ciudad.nombre}. ${EMPRESA.nombre} — presupuesto gratis, atención rápida y cobertura en toda la zona.`;
@@ -57,7 +58,7 @@ const description = ciudad.metaDesc || `${siteConfig.serviceType} en ${ciudad.no
           <li>
             <a href={`/${ciudadSlug}/${servicio.slug}/`} class="srv-card">
               <div class="srv-card-body">
-                <h3>{servicio.nombre} en {ciudad.nombre}</h3>
+                <h3>{cap(servicio.nombre)} en {ciudad.nombre}</h3>
                 <p>{servicio.descripcionCorta.replace(/\{ciudad\}/g, ciudad.nombre).replace(/\{provincia\}/g, ciudad.provincia).replace(/\{empresa\}/g, EMPRESA.nombre)}</p>
               </div>
               <div class="srv-card-footer">
