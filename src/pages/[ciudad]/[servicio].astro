@@ -39,7 +39,7 @@ function ipArr(arr: string[]) { return arr.map(ip); }
 
 const canonical   = `${siteConfig.web}/${ciudadSlug}/${servicioSlug}/`;
 const title       = `${servicio.nombre} en ${ciudad.nombre} | ${EMPRESA.nombre}`;
-const description = ip(servicio.descripcionCorta);
+const description = `${ip(servicio.descripcionCorta)} Presupuesto gratis. Llama al ${ciudad.telefono}.`;
 
 // Interlinking
 const otrosServicios    = otrosServiciosEnCiudad(ciudadSlug, servicioSlug);
