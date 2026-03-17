@@ -5,7 +5,9 @@
  * footer y todos los estilos globales (tokens, reset, botones, etc.).
  */
 import SEOHead from '../components/SEOHead.astro';
-import { EMPRESA } from '../data/empresa';
+import { EMPRESA, ciudades } from '../data/index';
+const mainCity = ciudades[0];
+const waPhone = mainCity.telefono.replace(/[^0-9]/g, '');
 // siteConfig es la fuente de verdad. Edita src/config/site.ts para
 // personalizar businessName, serviceType, area, phone, etc.
 import { siteConfig } from '../config/site';
@@ -55,6 +57,9 @@ const navLinks = [
         --c-primary-l: color-mix(in srgb, ${siteConfig.colorPrimary}  8%, #fff);
         --c-text:      ${siteConfig.colorText};
         --c-bg-dark:   color-mix(in srgb, ${siteConfig.colorText} 95%, #000);
+        --c-hero-from: color-mix(in srgb, ${siteConfig.colorPrimary} 12%, #000);
+        --c-hero-mid:  color-mix(in srgb, ${siteConfig.colorPrimary} 22%, #000);
+        --c-hero-gradient: linear-gradient(150deg, var(--c-hero-from) 0%, var(--c-hero-mid) 50%, ${siteConfig.colorPrimary} 100%);
       }
     `} />
   </head>
@@ -81,7 +86,10 @@ const navLinks = [
           ))}
         </nav>
 
-        <a href="/contacto" class="btn btn-sm">Solicitar presupuesto</a>
+        <a href="/contacto" class="btn btn-sm btn-cta-header">
+          <span class="cta-full">📋 PRESUPUESTO GRATIS</span>
+          <span class="cta-short">PRESUPUESTO</span>
+        </a>
 
         <button
           class="nav-toggle"
@@ -102,6 +110,19 @@ const navLinks = [
       <slot />
     </main>
 
+    <!-- ── Mapa ──────────────────────────────────────────── -->
+    <div class="footer-map-wrap" aria-label={`Ubicación de ${EMPRESA.nombre} en ${mainCity.nombre}`}>
+      <iframe
+        src={`https://maps.google.com/maps?q=${mainCity.lat},${mainCity.lng}&z=15&output=embed`}
+        width="100%"
+        height="260"
+        style="border:0;display:block;"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title={`Mapa de ${EMPRESA.nombre} en ${mainCity.nombre}`}
+      ></iframe>
+    </div>
+
     <!-- ── Footer ────────────────────────────────────────── -->
     <footer class="site-footer">
       <div class="container footer-inner">
@@ -116,6 +137,21 @@ const navLinks = [
           ))}
         </nav>
 
+        <address class="footer-nap" itemscope itemtype="https://schema.org/LocalBusiness">
+          <meta itemprop="name" content={EMPRESA.nombre} />
+          <span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+            <span itemprop="streetAddress">{mainCity.direccion}</span>
+            &nbsp;·&nbsp;
+            <span itemprop="addressLocality">{mainCity.nombre}</span>
+            &nbsp;
+            <span itemprop="postalCode">{mainCity.codigoPostal}</span>
+          </span>
+          &nbsp;·&nbsp;
+          <a href={`tel:${mainCity.telefono.replace(/\s/g,'')}`} itemprop="telephone">{mainCity.telefono}</a>
+          &nbsp;·&nbsp;
+          <a href={`mailto:${mainCity.email}`} itemprop="email">{mainCity.email}</a>
+        </address>
+
         <p class="footer-legal">
           &copy; {new Date().getFullYear()} {EMPRESA.nombreLegal}
           &nbsp;·&nbsp;<a href="/privacidad/">Privacidad</a>
@@ -123,6 +159,45 @@ const navLinks = [
         </p>
       </div>
     </footer>
+
+    <!-- ── Barra CTA móvil (Llamar + WhatsApp) ──────────── -->
+    <div id="mobile-cta-bar" class="mobile-cta-bar" hidden>
+      <a href={`tel:${mainCity.telefono.replace(/\s/g,'')}`} class="mobile-cta-btn mobile-cta-btn--call">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/>
+        </svg>
+        Llamar ahora
+      </a>
+      <a href={`https://wa.me/${waPhone}`} class="mobile-cta-btn mobile-cta-btn--wa" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        WhatsApp
+      </a>
+    </div>
+
+    <script is:inline defer>
+      (function () {
+        var bar = document.getElementById('mobile-cta-bar');
+        if (!bar || window.innerWidth > 768) return;
+        window.addEventListener('scroll', function () {
+          bar.hidden = window.scrollY < 200;
+        }, { passive: true });
+      })();
+    </script>
+
+    <!-- ── WhatsApp flotante ─────────────────────────── -->
+    <a
+      href={`https://wa.me/${waPhone}`}
+      class="wa-float"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp"
+    >
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+    </a>
 
     <!-- ── Volver arriba ────────────────────────────── -->
     <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" hidden>
@@ -395,6 +470,33 @@ const navLinks = [
   .btn-lg   { font-size: 1rem;   padding: .8rem 1.75rem; }
   .btn-full { width: 100%; justify-content: center; }
 
+  /* ── CTA Header button ── */
+  .btn-cta-header {
+    background: linear-gradient(135deg, #ff6b00 0%, #ff3d00 100%);
+    color: #fff !important;
+    border-color: transparent;
+    font-size: .82rem;
+    font-weight: 700;
+    padding: .55rem 1.25rem;
+    border-radius: 8px;
+    letter-spacing: .03em;
+    box-shadow: 0 3px 12px rgba(255, 80, 0, .35);
+    transition: transform .15s, box-shadow .15s, filter .15s;
+    white-space: nowrap;
+    animation: ctaPulse 2.4s ease-in-out infinite;
+  }
+  .btn-cta-header:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(255, 80, 0, .5);
+    text-decoration: none;
+    animation: none;
+  }
+  @keyframes ctaPulse {
+    0%, 100% { box-shadow: 0 3px 12px rgba(255, 80, 0, .35); }
+    50%       { box-shadow: 0 3px 22px rgba(255, 80, 0, .65); }
+  }
+
   /* ══════════════════════════════════════════════════════════
      HEADER
   ══════════════════════════════════════════════════════════ */
@@ -415,6 +517,7 @@ const navLinks = [
     align-items: center;
     gap: 1.5rem;
     height: 100%;
+    overflow: hidden;
   }
 
   .brand {
@@ -476,6 +579,17 @@ const navLinks = [
   /* ══════════════════════════════════════════════════════════
      FOOTER
   ══════════════════════════════════════════════════════════ */
+  .footer-map-wrap {
+    width: 100%;
+    line-height: 0;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+  .footer-map-wrap iframe {
+    filter: grayscale(30%) brightness(.9);
+    transition: filter .3s;
+  }
+  .footer-map-wrap iframe:hover { filter: grayscale(0%) brightness(1); }
+
   .site-footer {
     background: #050d1a;
     padding-block: 2rem;
@@ -501,14 +615,40 @@ const navLinks = [
   }
   .footer-nav a:hover { color: rgba(255,255,255,.8); text-decoration: none; }
 
+  .footer-nap { font-size: .78rem; color: rgba(255,255,255,.35); font-style: normal; width: 100%; text-align: center; line-height: 1.8; }
+  .footer-nap a { color: rgba(255,255,255,.45); text-decoration: none; }
+  .footer-nap a:hover { color: rgba(255,255,255,.75); }
   .footer-legal { font-size: .78rem; color: rgba(255,255,255,.3); }
   .footer-legal a { color: rgba(255,255,255,.4); text-decoration: underline; }
 
   /* ══════════════════════════════════════════════════════════
      MOBILE — nav desplegable
   ══════════════════════════════════════════════════════════ */
+  /* Mostrar/ocultar texto CTA según pantalla */
+  .cta-short { display: none; }
+  .cta-full  { display: inline; }
+
   @media (max-width: 768px) {
-    .site-header .btn-sm { display: none; }
+    .site-header .btn-sm:not(.btn-cta-header) { display: none; }
+
+    /* Header móvil: logo | flex-space | CTA corto | hamburger */
+    .header-inner { gap: .5rem; overflow: visible; }
+    .brand { flex: 1; min-width: 0; }
+    .brand-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-cta-header {
+      font-size: .72rem;
+      padding: .4rem .75rem;
+      flex-shrink: 0;
+      white-space: nowrap;
+      animation: none;
+    }
+    .cta-full  { display: none; }
+    .cta-short { display: inline; }
 
     .main-nav {
       display: none;
@@ -526,6 +666,88 @@ const navLinks = [
     .main-nav a { font-size: .95rem; padding: .65rem .9rem; }
 
     .nav-toggle { display: flex; }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     BARRA CTA MÓVIL
+  ══════════════════════════════════════════════════════════ */
+  .mobile-cta-bar { display: none; } /* oculta en desktop */
+
+  @media (max-width: 768px) {
+    .mobile-cta-bar {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      inset-inline: 0;
+      z-index: 996;
+      background: #0f172a;
+      border-top: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 -4px 20px rgba(0,0,0,.35);
+      padding: .5rem .75rem;
+      padding-bottom: calc(.5rem + env(safe-area-inset-bottom));
+      gap: .5rem;
+    }
+    .mobile-cta-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      padding: .75rem .5rem;
+      border-radius: var(--r-sm);
+      font-family: var(--font);
+      font-size: .88rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: filter .15s;
+    }
+    .mobile-cta-btn:hover { filter: brightness(1.1); text-decoration: none; }
+    .mobile-cta-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .mobile-cta-btn--call { background: var(--c-primary); color: #fff; }
+    .mobile-cta-btn--wa   { background: var(--c-whatsapp); color: #fff; }
+
+    /* Espacio para que el footer no quede tapado por la barra */
+    body { padding-bottom: 4.5rem; }
+
+    /* Ocultar botón WA flotante en móvil (la barra ya lo incluye) */
+    .wa-float { display: none; }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     WHATSAPP FLOTANTE
+  ══════════════════════════════════════════════════════════ */
+  .wa-float {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 997;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--c-whatsapp);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(37,211,102,.45);
+    text-decoration: none;
+    animation: waBeat 2s ease-in-out infinite;
+  }
+  .wa-float:hover {
+    background: #1db550;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(37,211,102,.6);
+    text-decoration: none;
+    animation: none;
+  }
+  .wa-float svg { width: 1.8rem; height: 1.8rem; }
+
+  @keyframes waBeat {
+    0%        { transform: scale(1); }
+    14%       { transform: scale(1.13); }
+    28%       { transform: scale(1); }
+    42%       { transform: scale(1.09); }
+    56%, 100% { transform: scale(1); }
   }
 
   /* ══════════════════════════════════════════════════════════
